@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 
 module('Integration | Component | rental/image', function (hooks) {
@@ -18,5 +18,27 @@ module('Integration | Component | rental/image', function (hooks) {
       .exists()
       .hasAttribute('src', '/assets/images/teaching-tomster.png')
       .hasAttribute('alt', 'Teaching Tomster');
+  });
+
+  test('clicking on the component toggles its size', async function (assert) {
+    await render(hbs`
+      <Rental::Image
+        src="/assets/images/teaching-tomster.png"
+        alt="Teaching Tomster" 
+      />`);
+
+    assert.dom('button.image').exists();
+    assert.dom('button.image').doesNotHaveClass('large');
+    assert.dom('button.image').hasText('View Larger');
+
+    await click('button.image');
+
+    assert.dom('button.image').hasClass('large');
+    assert.dom('button.image').hasText('View Smaller');
+
+    await click('button.image');
+
+    assert.dom('button.image').doesNotHaveClass('large');
+    assert.dom('button.image').hasText('View Larger');
   });
 });
